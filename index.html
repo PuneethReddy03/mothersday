@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celebrating Mother's Day</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Updated with more variety -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:wght@500;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    
+    <script>
+        // Extend Tailwind with custom fonts and animations
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'cursive': ['"Dancing Script"', 'cursive'],
+                        'display': ['"Playfair Display"', 'serif'],
+                        'body': ['Montserrat', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'floating 3s ease-in-out infinite',
+                        'heartbeat': 'heartbeat 1.5s ease infinite',
+                        'shimmer': 'shimmer 2s infinite',
+                        'gradient-x': 'gradient-x 15s ease infinite',
+                        'gradient-y': 'gradient-y 15s ease infinite',
+                        'gradient-xy': 'gradient-xy 15s ease infinite',
+                        'pulse-glow': 'pulseGlow 3s infinite',
+                    },
+                    keyframes: {
+                        floating: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' }
+                        },
+                        heartbeat: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.1)' }
+                        },
+                        shimmer: {
+                            '100%': { left: '150%' }
+                        },
+                        'gradient-x': {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        },
+                        'gradient-y': {
+                            '0%, 100%': { backgroundPosition: '50% 0%' },
+                            '50%': { backgroundPosition: '50% 100%' },
+                        },
+                        'gradient-xy': {
+                            '0%, 100%': { backgroundPosition: '0% 0%' },
+                            '50%': { backgroundPosition: '100% 100%' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 15px 0 rgba(255, 105, 180, 0.2)' },
+                            '50%': { boxShadow: '0 0 30px 5px rgba(255, 105, 180, 0.4)' },
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom Styles */
+        :root {
+            --pink-light: #ffd6e7;
+            --pink-medium: #ffb6c1;
+            --pink-dark: #ff69b4;
+            --purple-light: #e6d8f2;
+            --purple-medium: #c8a2d9;
+            --shadow-color: rgba(255, 182, 193, 0.5);
+        }
+        .quote-text, .quote-carousel blockquote {
+            font-family: "Lucida Handwriting", "Lucida Calligraphy", cursive;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        
+        /* Animation Classes */
+        .boom-container {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            background: linear-gradient(135deg, var(--pink-medium), var(--purple-medium));
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .flower {
+            position: absolute;
+            opacity: 0;
+            transform: scale(0);
+        }
+        
+        .hidden-initially {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        .photo-container {
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .photo-container img {
+            transition: transform 0.5s ease;
+        }
+        
+        .photo-container:hover img {
+            transform: scale(1.05);
+        }
+        
+        .photo-container .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            padding: 1rem;
+            color: white;
+        }
+        
+        .photo-container:hover .overlay {
+            opacity: 1;
+        }
+        
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            z-index: 90;
+            opacity: 0;
+        }
+        
+        /* New Animation Classes */
+        .animated-bg {
+            background-size: 400% 400%;
+            animation: gradient-xy 15s ease infinite;
+        }
+        
+        .floating-bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+            filter: blur(3px);
+            opacity: 0.4;
+            pointer-events: none;
+            animation: float-bubble linear infinite;
+        }
+        
+        @keyframes float-bubble {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(var(--x1, 30px), var(--y1, -30px)) scale(0.9);
+            }
+            66% {
+                transform: translate(var(--x2, -20px), var(--y2, -15px)) scale(1.1);
+            }
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+        }
+        
+        .petal {
+            position: absolute;
+            opacity: 0.7;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(-5vh) rotate(0deg) translateX(0);
+            }
+            25% {
+                transform: translateY(25vh) rotate(90deg) translateX(var(--x1, 20px));
+            }
+            50% {
+                transform: translateY(50vh) rotate(180deg) translateX(0);
+            }
+            75% {
+                transform: translateY(75vh) rotate(270deg) translateX(var(--x2, -20px));
+            }
+            100% {
+                transform: translateY(105vh) rotate(360deg) translateX(0);
+            }
+        }
+        
+        .glow-card {
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.2);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .glow-card:hover {
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.4);
+        }
+        
+        .ripple-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ripple-effect::after {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.5) 10%, transparent 10.01%);
+            background-repeat: no-repeat;
+            background-position: 50%;
+            transform: scale(10, 10);
+            opacity: 0;
+            transition: transform 0.6s, opacity 0.6s;
+        }
+        
+        .ripple-effect:active::after {
+            transform: scale(0, 0);
+            opacity: 0.3;
+            transition: 0s;
+        }
+        
+        .tilt-effect {
+            transition: transform 0.5s ease;
+            transform-style: preserve-3d;
+        }
+        
+        .tilt-effect:hover {
+            transform: perspective(1000px) rotateX(5deg) rotateY(5deg) scale(1.02);
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-pink-50 to-purple-50 min-h-screen font-body">
+    <!-- Background Animation Container -->
+    <div id="animated-background" class="fixed inset-0 overflow-hidden z-0"></div>
+    
+    <!-- Falling Petals Container -->
+    <div id="petals-container" class="fixed inset-0 overflow-hidden pointer-events-none z-10"></div>
+    
+    <!-- Initial Boom Effect -->
+    <div id="boom-effect" class="boom-container">
+        <div class="relative w-full h-full">
+            <!-- Flowers will be added via JavaScript -->
+        </div>
+    </div>
+
+    <!-- Confetti Container -->
+    <div id="confetti-container"></div>
+    
+    <!-- Main Content (Initially Hidden) -->
+    <div id="main-content" class="opacity-0">
+        <!-- Header -->
+        <header class="sticky top-0 z-50 backdrop-blur-sm bg-white/70 shadow-sm">
+            <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+                <div class="text-pink-600 font-bold text-2xl font-cursive">Mother's Day</div>
+                <nav>
+                    <ul class="flex space-x-6">
+                        <li><a href="#love" class="text-purple-600 hover:text-pink-500 transition-colors">Love</a></li>
+                        <li><a href="#memories" class="text-purple-600 hover:text-pink-500 transition-colors">Memories</a></li>
+                        <li><a href="#gratitude" class="text-purple-600 hover:text-pink-500 transition-colors">Gratitude</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        
+        <!-- Hero Section -->
+        <section class="py-20 relative overflow-hidden animated-bg bg-gradient-to-r from-pink-200 via-purple-100 to-pink-200" id="love">
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-3xl mx-auto text-center hidden-initially" id="hero-text">
+                    <h1 class="text-5xl md:text-7xl font-bold mb-6 font-cursive text-pink-600 shimmer">
+                        Celebrating Mom's Love
+                    </h1>
+                    <p class="text-lg md:text-xl text-purple-700 mb-8 font-display">
+                        A mother's love is the most beautiful gift in the world. Let's cherish the memories
+                        and celebrate the love that makes life extraordinary.
+                    </p>
+                    <div class="inline-block">
+                        <span class="px-8 py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-full 
+                              shadow-lg transition-all duration-300 inline-block hover:shadow-xl
+                              hover:translate-y-[-2px] cursor-pointer ripple-effect">
+                            Celebrate With Love ❤️
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Floating Elements -->
+            <div class="absolute inset-0 pointer-events-none overflow-hidden">
+                <div class="heart text-4xl animate-float" style="top: 20%; left: 10%;">❤️</div>
+                <div class="heart text-3xl animate-float" style="top: 35%; right: 15%; animation-delay: 0.5s;">❤️</div>
+                <div class="flower-emoji text-4xl animate-float" style="bottom: 15%; left: 15%; animation-delay: 0.9s;">🌸</div>
+                <div class="flower-emoji text-3xl animate-float" style="top: 10%; right: 25%; animation-delay: 1.2s;">🌺</div>
+                <div class="flower-emoji text-3xl animate-float" style="bottom: 25%; right: 10%; animation-delay: 0.7s;">🌷</div>
+            </div>
+        </section>
+        
+        <!-- Quote Section -->
+        <section class="py-16 bg-white relative overflow-hidden">
+            <!-- Background bubbles -->
+            <div id="bubble-container" class="absolute inset-0 pointer-events-none"></div>
+            
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-4xl mx-auto bg-gradient-to-r from-pink-100 via-purple-100 to-pink-100 
+                            p-8 rounded-xl shadow-lg relative overflow-hidden hidden-initially glow-card tilt-effect" id="quote-card">
+                    <div class="relative z-10">
+                        <blockquote class="text-xl md:text-2xl italic text-purple-800 mb-4 font-cursive">
+                            "A mother's love is the fuel that enables a normal human being to do the impossible."
+                        </blockquote>
+                        <p class="text-right text-pink-600 font-medium font-display">— Marion C. Garretty</p>
+                    </div>
+                    
+                    <!-- Decorative elements -->
+                    <div class="absolute top-0 left-0 text-6xl opacity-20 transform -translate-x-1/4 -translate-y-1/4 animate-pulse">❤️</div>
+                    <div class="absolute bottom-0 right-0 text-6xl opacity-20 transform translate-x-1/4 translate-y-1/4 animate-pulse" style="animation-delay: 1s;">💐</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Gallery Section -->
+        <section class="py-16 relative" id="memories">
+            <!-- Background pattern -->
+            <div class="absolute inset-0 bg-gradient-to-b from-white to-pink-50 opacity-70"></div>
+            
+            <div class="container mx-auto px-4 relative z-10">
+                <h2 class="text-4xl font-bold text-center mb-12 text-pink-600 font-cursive hidden-initially" id="gallery-title">
+                    Beautiful Memories
+                </h2>
+                
+                <!-- Featured Photo -->
+                <div class="mb-12 hidden-initially" id="featured-photo">
+                    <div class="photo-container rounded-xl shadow-2xl mx-auto max-w-4xl tilt-effect">
+                        <img 
+                            src="./images/mom2.jpg" 
+                            alt="Mother in beautiful traditional attire" 
+                            class="w-full h-auto rounded-xl"
+                        >
+                        <div class="overlay rounded-xl">
+                            <h3 class="text-2xl font-bold mb-2 font-display">The world's best mom</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Photo Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="photo-grid">
+                    <div class="photo-container rounded-xl shadow-lg overflow-hidden hidden-initially glow-card">
+                        <img 
+                            src="./images/mom1.jpg" 
+                            alt="Mom's special moment" 
+                            class="w-full h-64 object-cover"
+                        >
+                        <div class="overlay">
+                            <p class="font-medium font-display">Creating memories together</p>
+                        </div>
+                    </div>
+                    
+                    <div class="photo-container rounded-xl shadow-lg overflow-hidden hidden-initially glow-card">
+                        <img 
+                            src="./images/mom3.jpg" 
+                            alt="Mom's celebration" 
+                            class="w-full h-64 object-cover"
+                        >
+                        <div class="overlay">
+                            <p class="font-medium font-display">Your love guides us every day</p>
+                        </div>
+                    </div>
+                    
+                    <div class="photo-container rounded-xl shadow-lg overflow-hidden hidden-initially glow-card">
+                        <img 
+                            src="./images/mom4.jpg" 
+                            alt="Mom's smile" 
+                            class="w-full h-64 object-cover"
+                        >
+                        <div class="overlay">
+                            <p class="font-medium font-display">You make life beautiful</p>
+                        </div>
+                    </div>
+                    
+                    <div class="photo-container rounded-xl shadow-lg overflow-hidden hidden-initially glow-card">
+                        <img 
+                            src="./images/mom5.jpg" 
+                            alt="Mom's joy" 
+                            class="w-full h-64 object-cover"
+                        >
+                        <div class="overlay">
+                            <p class="font-medium font-display">Forever grateful for your love</p>
+                        </div>
+                    </div>
+                    
+                    <div class="photo-container rounded-xl shadow-lg overflow-hidden hidden-initially glow-card">
+                        <img 
+                            src="./images/mom6.jpg" 
+                            alt="Special day with mom" 
+                            class="w-full h-64 object-cover"
+                        >
+                        <div class="overlay">
+                            <p class="font-medium font-display">The heart that keeps us together</p>
+                        </div>
+                    </div>
+                    
+                    <div class="photo-container rounded-xl shadow-lg overflow-hidden hidden-initially glow-card">
+                        <img 
+                            src="./images/mom3.jpg" 
+                            alt="Mom's elegance" 
+                            class="w-full h-64 object-cover object-top"
+                        >
+                        <div class="overlay">
+                            <p class="font-medium font-display">Your smile brightens our days</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Quotes Carousel -->
+        <section class="py-16 relative overflow-hidden" id="gratitude">
+            <!-- Animated background gradient -->
+            <div class="absolute inset-0 animated-bg bg-gradient-to-r from-pink-100 via-purple-100 to-pink-200"></div>
+            
+            <div class="container mx-auto px-4 relative z-10">
+                <h2 class="text-4xl font-bold text-center mb-12 text-pink-600 font-cursive hidden-initially" id="quotes-title">
+                    Words of Love
+                </h2>
+                
+                <div class="max-w-4xl mx-auto hidden-initially" id="quotes-carousel">
+                    <div class="bg-white/90 backdrop-blur-sm p-8 rounded-xl shadow-xl relative glow-card tilt-effect">
+                        <div id="quote-text" class="text-xl md:text-2xl italic text-center text-purple-700 mb-6 font-cursive">
+                            "God could not be everywhere, and therefore he made mothers."
+                        </div>
+                        <div id="quote-author" class="text-center text-pink-500 font-display">
+                            — Jewish Proverb
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center mt-6 space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-pink-400 cursor-pointer quote-dot active"></span>
+                        <span class="w-3 h-3 rounded-full bg-pink-200 cursor-pointer quote-dot"></span>
+                        <span class="w-3 h-3 rounded-full bg-pink-200 cursor-pointer quote-dot"></span>
+                        <span class="w-3 h-3 rounded-full bg-pink-200 cursor-pointer quote-dot"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Call to Action -->
+        <section class="py-16 bg-white/80 backdrop-blur-sm relative overflow-hidden">
+            <!-- Floating hearts background -->
+            <div id="floating-hearts" class="absolute inset-0 pointer-events-none"></div>
+            
+            <div class="container mx-auto px-4 text-center relative z-10">
+                <div class="max-w-3xl mx-auto hidden-initially" id="cta-section">
+                    <h2 class="text-4xl font-bold mb-6 text-pink-600 font-cursive">Make Every Moment Count</h2>
+                    <p class="text-lg text-purple-700 mb-8 font-display">
+                        Share your love and gratitude with your mom today. Every moment is precious, and every memory is a treasure.
+                    </p>
+                    <div class="inline-block">
+                        <span class="px-8 py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-full 
+                              shadow-lg transition-all duration-300 inline-block hover:shadow-xl
+                              hover:translate-y-[-2px] cursor-pointer animate-heartbeat ripple-effect">
+                            Share Your Love ❤️
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="bg-gradient-to-r from-purple-700 via-purple-800 to-pink-700 text-white py-8">
+            <div class="container mx-auto px-4 text-center">
+                <p class="mb-2 font-display">Created with ❤️ for the world's best mom</p>
+                <p class="text-purple-200 text-sm">Happy Mother's Day 2023</p>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Create animated background elements
+            function createAnimatedBackground() {
+                const background = document.getElementById('animated-background');
+                
+                // Create gradient backgrounds that move
+                for (let i = 0; i < 4; i++) {
+                    const gradientBg = document.createElement('div');
+                    gradientBg.className = 'absolute inset-0 animated-bg opacity-30';
+                    gradientBg.style.backgroundImage = `radial-gradient(circle at ${Math.random() * 100}% ${Math.random() * 100}%, 
+                                                      rgba(255, 182, 193, 0.4), 
+                                                      rgba(200, 162, 217, 0.3), 
+                                                      rgba(255, 255, 255, 0))`;
+                    gradientBg.style.animationDuration = `${20 + (i * 5)}s`;
+                    gradientBg.style.animationDelay = `${i * 2}s`;
+                    background.appendChild(gradientBg);
+                }
+                
+                // Create floating bubbles
+                for (let i = 0; i < 8; i++) {
+                    createBubble(background);
+                }
+            }
+            
+            // Create a floating bubble
+            function createBubble(container) {
+                const bubble = document.createElement('div');
+                bubble.className = 'floating-bubble';
+                
+                const size = Math.random() * 150 + 50;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${posX}%`;
+                bubble.style.top = `${posY}%`;
+                bubble.style.setProperty('--x1', `${Math.random() * 60 - 30}px`);
+                bubble.style.setProperty('--y1', `${Math.random() * 60 - 30}px`);
+                bubble.style.setProperty('--x2', `${Math.random() * 60 - 30}px`);
+                bubble.style.setProperty('--y2', `${Math.random() * 60 - 30}px`);
+                bubble.style.animationDuration = `${Math.random() * 15 + 15}s`;
+                
+                container.appendChild(bubble);
+            }
+            
+            // Create falling petals
+            function createFallingPetals() {
+                const petalsContainer = document.getElementById('petals-container');
+                const petalEmojis = ['🌸', '🌺', '🌷', '💮', '🏵️', '🌹'];
+                
+                // Create initial petals
+                for (let i = 0; i < 12; i++) {
+                    createPetal(petalsContainer, petalEmojis);
+                }
+                
+                // Create new petals periodically
+                setInterval(() => {
+                    if (petalsContainer.children.length < 20) {
+                        createPetal(petalsContainer, petalEmojis);
+                    }
+                }, 3000);
+            }
+            
+            // Create a single petal
+            function createPetal(container, emojis) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                
+                const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+                const left = Math.random() * 100;
+                const size = Math.random() * 1 + 0.5;
+                const duration = Math.random() * 10 + 15;
+                
+                petal.textContent = emoji;
+                petal.style.left = `${left}%`;
+                petal.style.fontSize = `${size}rem`;
+                petal.style.setProperty('--x1', `${Math.random() * 100 - 50}px`);
+                petal.style.setProperty('--x2', `${Math.random() * 100 - 50}px`);
+                petal.style.animation = `fall ${duration}s linear forwards`;
+                
+                container.appendChild(petal);
+                
+                // Remove petal after animation
+                setTimeout(() => {
+                    if (petal.parentNode === container) {
+                        container.removeChild(petal);
+                    }
+                }, duration * 1000);
+            }
+            
+            // Create floating hearts for CTA section
+            function createFloatingHearts() {
+                const heartsContainer = document.getElementById('floating-hearts');
+                
+                for (let i = 0; i < 12; i++) {
+                    const heart = document.createElement('div');
+                    heart.className = 'absolute';
+                    heart.textContent = '❤️';
+                    heart.style.fontSize = `${Math.random() * 1.5 + 0.5}rem`;
+                    heart.style.opacity = Math.random() * 0.3 + 0.1;
+                    heart.style.left = `${Math.random() * 100}%`;
+                    heart.style.top = `${Math.random() * 100}%`;
+                    heart.style.animation = `floating ${Math.random() * 3 + 2}s ease-in-out infinite`;
+                    heart.style.animationDelay = `${Math.random() * 2}s`;
+                    heartsContainer.appendChild(heart);
+                }
+            }
+            
+            // Create bubbles for quote section
+            function createBubbles() {
+                const bubbleContainer = document.getElementById('bubble-container');
+                
+                for (let i = 0; i < 8; i++) {
+                    const bubble = document.createElement('div');
+                    bubble.className = 'absolute rounded-full bg-pink-100/20';
+                    
+                    const size = Math.random() * 100 + 50;
+                    bubble.style.width = `${size}px`;
+                    bubble.style.height = `${size}px`;
+                    bubble.style.left = `${Math.random() * 100}%`;
+                    bubble.style.top = `${Math.random() * 100}%`;
+                    bubble.style.filter = 'blur(8px)';
+                    bubble.style.animation = `floating ${Math.random() * 5 + 5}s ease-in-out infinite`;
+                    bubble.style.animationDelay = `${Math.random() * 5}s`;
+                    
+                    bubbleContainer.appendChild(bubble);
+                }
+            }
+            
+            // Initialize animation elements
+            createAnimatedBackground();
+            createFallingPetals();
+            createBubbles();
+            createFloatingHearts();
+            
+            // Initialize animation elements
+            const floatingElements = document.querySelectorAll('.heart, .flower-emoji');
+            floatingElements.forEach((el, index) => {
+                el.style.position = 'absolute';
+            });
+            
+            // Initial boom effect
+            const boomContainer = document.getElementById('boom-effect');
+            const mainContent = document.getElementById('main-content');
+            
+            // Create flower elements for the boom
+            const flowerCount = 40; // Increased for more visual impact
+            const flowerEmojis = ['🌸', '🌹', '🌺', '🌷', '💐', '❤️'];
+            
+            for (let i = 0; i < flowerCount; i++) {
+                const flower = document.createElement('div');
+                flower.className = 'flower';
+                flower.textContent = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
+                flower.style.fontSize = `${Math.random() * 2 + 1}rem`;
+                flower.style.left = `${Math.random() * 100}%`;
+                flower.style.top = `${Math.random() * 100}%`;
+                flower.style.zIndex = '101';
+                boomContainer.querySelector('.relative').appendChild(flower);
+            }
+            
+            // Center flower
+            const centerFlower = document.createElement('div');
+            centerFlower.className = 'flower';
+            centerFlower.textContent = '🌺';
+            centerFlower.style.fontSize = '6rem';
+            centerFlower.style.left = '50%';
+            centerFlower.style.top = '50%';
+            centerFlower.style.transform = 'translate(-50%, -50%) scale(0)';
+            centerFlower.style.zIndex = '102';
+            boomContainer.querySelector('.relative').appendChild(centerFlower);
+            
+            // Message
+            const message = document.createElement('div');
+            message.className = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center z-[103] opacity-0';
+            message.innerHTML = `
+                <h1 class="text-4xl md:text-6xl font-bold text-white mb-2 font-cursive">
+                    Happy Mother's Day!
+                </h1>
+                <p class="text-xl text-white font-display">Celebrating the most beautiful love</p>
+            `;
+            boomContainer.querySelector('.relative').appendChild(message);
+            
+            // Animate the boom effect with enhanced visuals
+            anime({
+                targets: '.flower',
+                scale: [0, 1],
+                opacity: [0, 1],
+                delay: anime.stagger(80, {from: 'center', easing: 'easeOutQuad'}),
+                duration: 1200,
+                easing: 'easeOutElastic(1, 0.5)',
+                complete: () => {
+                    // Show the central flower bigger
+                    anime({
+                        targets: centerFlower,
+                        scale: 1.8,
+                        opacity: 1,
+                        duration: 1000,
+                        easing: 'easeOutElastic(1, 0.4)'
+                    });
+                    
+                    // Show the message with glow effect
+                    setTimeout(() => {
+                        anime({
+                            targets: message,
+                            opacity: 1,
+                            scale: [0.9, 1],
+                            duration: 1200,
+                            easing: 'easeOutQuad'
+                        });
+                        
+                        // Add text glow effect
+                        const textGlow = document.createElement('style');
+                        textGlow.innerHTML = `
+                            ${message.querySelector('h1').tagName} {
+                                text-shadow: 0 0 15px rgba(255, 255, 255, 0.8),
+                                            0 0 30px rgba(255, 182, 193, 0.6);
+                            }
+                        `;
+                        document.head.appendChild(textGlow);
+                        
+                        // Hide boom effect, show main content
+                        setTimeout(() => {
+                            anime({
+                                targets: boomContainer,
+                                opacity: 0,
+                                duration: 1200,
+                                easing: 'easeInOutQuad',
+                                complete: () => {
+                                    boomContainer.style.display = 'none';
+                                    showMainContent();
+                                }
+                            });
+                        }, 2000);
+                    }, 1000);
+                }
+            });
+            
+            // Show main content with enhanced animations
+            function showMainContent() {
+                mainContent.style.opacity = '1';
+                mainContent.style.transition = 'opacity 1.2s ease';
+                
+                // Animate the hidden elements with staggered timing
+                const elements = document.querySelectorAll('.hidden-initially');
+                elements.forEach((el, index) => {
+                    // Create staggered reveal effect based on element position
+                    const delay = 400 + (index * 150);
+                    setTimeout(() => {
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0)';
+                        el.style.transition = 'opacity 1s ease, transform 1s cubic-bezier(0.17, 0.67, 0.3, 1)';
+                    }, delay);
+                });
+                
+                // Create confetti with enhanced colors
+                createConfetti();
+                
+                // Handle quotes carousel
+                initQuotesCarousel();
+                
+                // Add parallax scroll effect
+                addParallaxEffect();
+            }
+            
+            // Enhanced confetti with more shapes and colors
+            function createConfetti() {
+                const confettiContainer = document.getElementById('confetti-container');
+                const colors = ['#ff77e9', '#77bfff', '#ffde77', '#77ff8a', '#ff77a9', '#d183ff', '#ff9e77'];
+                const confettiCount = 80;
+                
+                for (let i = 0; i < confettiCount; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    
+                    // Randomly choose between rectangle and heart shapes
+                    const isHeart = Math.random() > 0.7;
+                    if (isHeart) {
+                        confetti.textContent = '❤️';
+                        confetti.style.width = 'auto';
+                        confetti.style.height = 'auto';
+                        confetti.style.fontSize = `${Math.random() * 10 + 8}px`;
+                    } else {
+                        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        confetti.style.left = `${Math.random() * 100}%`;
+                        confetti.style.width = `${Math.random() * 8 + 5}px`;
+                        confetti.style.height = `${Math.random() * 15 + 5}px`;
+                        // Add some variety in shapes
+                        if (Math.random() > 0.5) {
+                            confetti.style.borderRadius = '50%';
+                        }
+                    }
+                    
+                    confetti.style.left = `${Math.random() * 100}%`;
+                    confetti.style.opacity = '0';
+                    confettiContainer.appendChild(confetti);
+                    
+                    // Animate each confetti piece with random movement
+                    anime({
+                        targets: confetti,
+                        translateY: ['-10vh', '100vh'],
+                        translateX: [0, `${(Math.random() - 0.5) * 60}%`],
+                        rotate: [0, Math.random() * 720 - 360],
+                        opacity: [0, 0.7, 0],
+                        delay: Math.random() * 3000,
+                        duration: Math.random() * 3000 + 3000,
+                        easing: 'easeInOutSine',
+                        complete: () => {
+                            if (confetti.parentNode === confettiContainer) {
+                                confettiContainer.removeChild(confetti);
+                            }
+                        }
+                    });
+                }
+            }
+            
+            // Enhanced quotes carousel with smoother transitions
+            function initQuotesCarousel() {
+                const quotes = [
+                    {
+                        text: "God could not be everywhere, and therefore he made mothers.",
+                        author: "Jewish Proverb"
+                    },
+                    {
+                        text: "A mother's arms are more comforting than anyone else's.",
+                        author: "Princess Diana"
+                    },
+                    {
+                        text: "Mother is the heartbeat in the home; and without her, there seems to be no heartthrob.",
+                        author: "Terri Guillemets"
+                    },
+                    {
+                        text: "Mothers hold their children's hands for a short while, but their hearts forever.",
+                        author: "Unknown"
+                    }
+                ];
+                
+                const quoteText = document.getElementById('quote-text');
+                const quoteAuthor = document.getElementById('quote-author');
+                const quoteDots = document.querySelectorAll('.quote-dot');
+                
+                let currentQuote = 0;
+                
+                // Set up dot click handlers
+                quoteDots.forEach((dot, index) => {
+                    dot.addEventListener('click', () => {
+                        changeQuote(index);
+                    });
+                });
+                
+                // Change quote every 5 seconds
+                setInterval(() => {
+                    currentQuote = (currentQuote + 1) % quotes.length;
+                    changeQuote(currentQuote);
+                }, 5000);
+                
+                // Enhanced transition for quote changes
+                function changeQuote(index) {
+                    // Update active dot
+                    quoteDots.forEach(d => d.classList.replace('bg-pink-400', 'bg-pink-200'));
+                    quoteDots.forEach(d => d.classList.remove('active'));
+                    quoteDots[index].classList.replace('bg-pink-200', 'bg-pink-400');
+                    quoteDots[index].classList.add('active');
+                    
+                    // Fade out current quote with enhanced animation
+                    anime({
+                        targets: [quoteText, quoteAuthor],
+                        opacity: 0,
+                        translateY: -20,
+                        scale: 0.95,
+                        duration: 600,
+                        easing: 'easeInOutQuad',
+                        complete: () => {
+                            // Change text
+                            quoteText.textContent = `"${quotes[index].text}"`;
+                            quoteAuthor.textContent = `— ${quotes[index].author}`;
+                            
+                            // Fade in new quote with enhanced animation
+                            anime({
+                                targets: [quoteText, quoteAuthor],
+                                opacity: 1,
+                                translateY: 0,
+                                scale: 1,
+                                duration: 600,
+                                easing: 'easeOutQuad'
+                            });
+                        }
+                    });
+                    
+                    currentQuote = index;
+                }
+            }
+            
+            // Add parallax scrolling effect
+            function addParallaxEffect() {
+                window.addEventListener('scroll', () => {
+                    const scrollPosition = window.pageYOffset;
+                    
+                    // Parallax for floating elements
+                    document.querySelectorAll('.heart, .flower-emoji').forEach(el => {
+                        const speed = parseFloat(el.getAttribute('data-speed') || 0.05);
+                        const yPos = -(scrollPosition * speed);
+                        el.style.transform = `translateY(${yPos}px)`;
+                    });
+                    
+                    // Parallax for section backgrounds
+                    document.querySelectorAll('.animated-bg').forEach(el => {
+                        const rect = el.getBoundingClientRect();
+                        if (rect.top < window.innerHeight && rect.bottom > 0) {
+                            const speed = 0.1;
+                            const yPos = (rect.top - window.innerHeight) * speed;
+                            el.style.backgroundPositionY = `${yPos}px`;
+                        }
+                    });
+                });
+            }
+            
+            // Enhanced Intersection Observer for scroll animations
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            // Add additional class for enhanced animation
+                            entry.target.classList.add('animate-in');
+                            
+                            // Basic fade in
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                            entry.target.style.transition = 'opacity 0.8s ease, transform 0.8s cubic-bezier(0.17, 0.67, 0.3, 1)';
+                            
+                            // Add specific animation based on element type
+                            if (entry.target.classList.contains('photo-container')) {
+                                anime({
+                                    targets: entry.target,
+                                    scale: [0.9, 1],
+                                    duration: 800,
+                                    easing: 'easeOutElastic(1, 0.6)'
+                                });
+                            }
+                            
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                },
+                { threshold: 0.15, rootMargin: "0px 0px -50px 0px" }
+            );
+            
+            // Observe hidden elements for scroll animation
+            document.querySelectorAll('.hidden-initially').forEach((el) => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
